@@ -87,9 +87,9 @@ main {
   height: var(--cover-h);
   margin-left: calc(var(--cover-w) / -2);
   margin-top: calc(var(--cover-h) / -2 - 28px);
-  border-radius: 12px;
+  border-radius: 0;
   overflow: visible;
-  border: 1px solid #ffffff26;
+  border: 0;
   box-shadow: 0 28px 40px #00000070;
   transform: translate3d(0, 0, -900px);
   -webkit-transform: translate3d(0, 0, -900px);
@@ -108,7 +108,7 @@ main {
   height: 100%;
   object-fit: cover;
   display: block;
-  border-radius: 12px;
+  border-radius: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: translateZ(0);
@@ -120,8 +120,8 @@ main {
   position: absolute;
   left: 0;
   right: 0;
-  top: 100%;
-  height: 120px;
+  top: calc(100% + 3px);
+  height: 46%;
   background-image: var(--cover-image);
   background-size: cover;
   background-position: center;
@@ -129,15 +129,35 @@ main {
   -webkit-transform: scaleY(-1) translateZ(0);
   transform-origin: top;
   -webkit-transform-origin: top;
-  opacity: 0.35;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0));
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0));
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  opacity: 0;
+  filter: blur(1.8px) saturate(1.05);
+  -webkit-filter: blur(1.8px) saturate(1.05);
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0));
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0));
   pointer-events: none;
+  transition: opacity 260ms ease;
+  -webkit-transition: opacity 260ms ease;
+}
+
+.cover::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 1px);
+  height: 9px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.38), rgba(255,255,255,0));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease;
+  -webkit-transition: opacity 260ms ease;
 }
 
 .cover[data-pos="center"] { z-index: 50; }
+.cover[data-pos="center"]::after { opacity: 0.42; }
+.cover[data-pos="center"]::before { opacity: 0.32; }
+.cover[data-pos="left"]::after,
+.cover[data-pos="right"]::after { opacity: 0.2; }
 
 .meta {
   border-left: 1px solid #2a3148;
