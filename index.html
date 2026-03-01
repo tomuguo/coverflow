@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cover Flow Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1>Cover Flow</h1>
+      <div class="controls">
+        <label class="search-wrap" for="searchInput">
+          <span>Search</span>
+          <input id="searchInput" type="search" placeholder="title, artist, album..." autocomplete="off" />
+        </label>
+        <button id="fullscreenBtn" type="button" title="Toggle fullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="flow-stage" aria-label="Album cover flow" tabindex="0">
+        <div id="flow" class="flow"></div>
+      </section>
+
+      <aside id="meta" class="meta" aria-live="polite">
+        <h2 id="metaTitle">Loading…</h2>
+        <p><strong>Artist:</strong> <span id="metaArtist">—</span></p>
+        <p><strong>Album:</strong> <span id="metaAlbum">—</span></p>
+        <p><strong>Year:</strong> <span id="metaYear">—</span></p>
+        <p id="metaIndex" class="muted"></p>
+      </aside>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
