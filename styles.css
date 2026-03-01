@@ -15,6 +15,7 @@ body {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   background: radial-gradient(circle at 50% -30%, #1d2640 0%, var(--bg) 55%);
   color: var(--text);
+  -webkit-font-smoothing: antialiased;
 }
 
 .app {
@@ -31,6 +32,7 @@ body {
   padding: 1rem 1.2rem;
   border-bottom: 1px solid #2a3148;
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .topbar h1 { margin: 0; font-size: 1.15rem; letter-spacing: 0.06em; text-transform: uppercase; }
 .controls { display: flex; gap: 0.7rem; align-items: end; }
@@ -62,6 +64,7 @@ main {
   position: relative;
   overflow: hidden;
   perspective: 1200px;
+  -webkit-perspective: 1200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,6 +76,7 @@ main {
   width: 100%;
   height: min(72vh, 640px);
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
 .cover {
@@ -87,9 +91,17 @@ main {
   overflow: visible;
   border: 1px solid #ffffff26;
   box-shadow: 0 28px 40px #00000070;
-  transition: transform 420ms cubic-bezier(.2,.7,.2,1), opacity 360ms ease, filter 360ms ease;
-  will-change: transform;
+  transform: translate3d(0, 0, -900px);
+  -webkit-transform: translate3d(0, 0, -900px);
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: transform 450ms cubic-bezier(.2,.7,.2,1), opacity 360ms ease;
+  -webkit-transition: -webkit-transform 450ms cubic-bezier(.2,.7,.2,1), opacity 360ms ease;
+  will-change: transform, opacity;
   cursor: pointer;
+  contain: paint;
 }
 .cover img {
   width: 100%;
@@ -97,6 +109,10 @@ main {
   object-fit: cover;
   display: block;
   border-radius: 12px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .cover::after {
@@ -109,13 +125,16 @@ main {
   background-image: var(--cover-image);
   background-size: cover;
   background-position: center;
-  transform: scaleY(-1);
+  transform: scaleY(-1) translateZ(0);
+  -webkit-transform: scaleY(-1) translateZ(0);
   transform-origin: top;
+  -webkit-transform-origin: top;
   opacity: 0.35;
   mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0));
   -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0));
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
+  pointer-events: none;
 }
 
 .cover[data-pos="center"] { z-index: 50; }
@@ -142,4 +161,15 @@ main {
   main { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
   .meta { border-left: 0; border-top: 1px solid #2a3148; }
   :root { --cover-w: 220px; --cover-h: 220px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover {
+    transition: none;
+    -webkit-transition: none;
+  }
+  .topbar {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }

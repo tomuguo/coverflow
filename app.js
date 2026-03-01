@@ -11,16 +11,20 @@ const metaIndex = document.getElementById('metaIndex');
 
 let allItems = [];
 let filteredItems = [];
+let cards = [];
 let selected = 0;
 let wheelLock = false;
+let rafId = 0;
+const VISIBLE_RANGE = 7;
 
 async function loadData() {
   try {
-    const res = await fetch('data.json');
+    const res = await fetch('./data.json');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     allItems = await res.json();
     filteredItems = [...allItems];
-    render();
+    renderCards();
+    scheduleVisualUpdate();
   } catch (err) {
     flowEl.innerHTML = `<div class="empty">Could not load <code>data.json</code>. Try running <code>python -m http.server</code> in this folder.</div>`;
     console.error(err);
@@ -36,9 +40,10 @@ function clampSelected() {
 }
 
 function setSelected(idx) {
-  selected = idx;
-  clampSelected();
-  render();
+  const next = Math.max(0, Math.min(idx, Math.max(0, filteredItems.length - 1)));
+  if (next === selected) return;
+  selected = next;
+  scheduleVisualUpdate();
 }
 
 function move(delta) {
@@ -73,7 +78,32 @@ function coverTransform(offset) {
   return `translate3d(${x}px, ${y}px, ${z}px) rotateY(${rotateY}deg) scale(${scale})`;
 }
 
-function render() {
+function buildCard(item, idx) {
+  const card = document.createElement('button');
+  card.className = 'cover';
+  card.type = 'button';
+  card.dataset.index = String(idx);
+  card.style.setProperty('--cover-image', `url("${item.coverUrl}")`);
+  card.ariaLabel = `${item.title} by ${item.artist}`;
+
+  const img = document.createElement('img');
+  img.src = item.coverUrl;
+  img.alt = `${item.album} cover art`;
+  img.draggable = false;
+
+  card.appendChild(img);
+  card.addEventListener('click', () => {
+    if (selected !== idx) {
+      selected = idx;
+      scheduleVisualUpdate();
+    }
+  });
+
+  return card;
+}
+
+function renderCards() {
+  cards = [];
   flowEl.innerHTML = '';
 
   if (!filteredItems.length) {
@@ -82,32 +112,39 @@ function render() {
     return;
   }
 
+  const frag = document.createDocumentFragment();
   filteredItems.forEach((item, idx) => {
-    const offset = idx - selected;
-    if (Math.abs(offset) > 7) return;
+    const card = buildCard(item, idx);
+    cards.push(card);
+    frag.appendChild(card);
+  });
 
-    const card = document.createElement('button');
-    card.className = 'cover';
-    card.type = 'button';
+  flowEl.appendChild(frag);
+}
+
+function updateCardsVisual() {
+  cards.forEach((card, idx) => {
+    const offset = idx - selected;
+    const abs = Math.abs(offset);
+    const visible = abs <= VISIBLE_RANGE;
+
+    card.hidden = !visible;
+    card.style.pointerEvents = visible ? 'auto' : 'none';
+
+    if (!visible) return;
+
     card.dataset.pos = offset === 0 ? 'center' : (offset < 0 ? 'left' : 'right');
     card.style.transform = coverTransform(offset);
-    card.style.opacity = String(Math.max(0, 1 - Math.abs(offset) * 0.18));
-    card.style.filter = offset === 0 ? 'none' : 'saturate(0.85) brightness(0.85)';
-    card.style.setProperty('--cover-image', `url("${item.coverUrl}")`);
-    card.ariaLabel = `${item.title} by ${item.artist}`;
-
-    const img = document.createElement('img');
-    img.src = item.coverUrl;
-    img.alt = `${item.album} cover art`;
-    img.draggable = false;
-
-    card.appendChild(img);
-    card.addEventListener('click', () => setSelected(idx));
-
-    flowEl.appendChild(card);
+    card.style.opacity = String(Math.max(0, 1 - abs * 0.18));
+    card.style.zIndex = String(100 - abs);
   });
 
   updateMeta();
+}
+
+function scheduleVisualUpdate() {
+  cancelAnimationFrame(rafId);
+  rafId = requestAnimationFrame(updateCardsVisual);
 }
 
 searchEl.addEventListener('input', (e) => {
@@ -116,7 +153,9 @@ searchEl.addEventListener('input', (e) => {
     return `${item.title} ${item.artist} ${item.album} ${item.year}`.toLowerCase().includes(q);
   });
   selected = 0;
-  render();
+  clampSelected();
+  renderCards();
+  scheduleVisualUpdate();
 });
 
 function onWheel(e) {
