@@ -40,20 +40,22 @@ body {
 .search-wrap input {
   width: min(52vw, 320px);
   padding: 0.55rem 0.65rem;
-  border-radius: 8px;
-  border: 1px solid #3a4464;
+  border-radius: 0;
+  border: 0;
   background: #0d1220;
   color: var(--text);
+  outline: 1px solid #3a4464;
 }
 button {
-  border: 1px solid #3a4464;
+  border: 0;
   background: #121a2e;
   color: var(--text);
   padding: 0.56rem 0.7rem;
-  border-radius: 8px;
+  border-radius: 0;
   cursor: pointer;
+  outline: 1px solid #3a4464;
 }
-button:hover { border-color: var(--accent); }
+button:hover { outline-color: var(--accent); }
 
 main {
   display: grid;
@@ -91,6 +93,9 @@ main {
   overflow: visible;
   border: 0;
   box-shadow: 0 28px 40px #00000070;
+  background: transparent;
+  padding: 0;
+  outline: none;
   transform: translate3d(0, 0, -900px);
   -webkit-transform: translate3d(0, 0, -900px);
   transform-style: preserve-3d;
@@ -101,7 +106,6 @@ main {
   -webkit-transition: -webkit-transform 450ms cubic-bezier(.2,.7,.2,1), opacity 360ms ease;
   will-change: transform, opacity;
   cursor: pointer;
-  contain: paint;
 }
 .cover img {
   width: 100%;
@@ -132,11 +136,15 @@ main {
   opacity: 0;
   filter: blur(1.8px) saturate(1.05);
   -webkit-filter: blur(1.8px) saturate(1.05);
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0));
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0));
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0));
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0));
   pointer-events: none;
   transition: opacity 260ms ease;
   -webkit-transition: opacity 260ms ease;
+
+  /* If --cover-image is missing for any reason, reflection won't render.
+     This makes the failure mode obvious while we debug. */
+  background-color: rgba(255, 0, 80, 0.08);
 }
 
 .cover::before {
