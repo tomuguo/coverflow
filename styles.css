@@ -124,8 +124,8 @@ main {
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(100% + 3px);
-  height: 46%;
+  top: calc(200% + 3px);
+  height: 200%;
   background-image: var(--cover-image);
   background-size: cover;
   background-position: center;
@@ -136,8 +136,8 @@ main {
   opacity: 0;
   filter: blur(1.8px) saturate(1.05);
   -webkit-filter: blur(1.8px) saturate(1.05);
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0));
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0));
+  mask-image: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0), rgba(0,0,0,0));
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0), rgba(0,0,0,0));
   pointer-events: none;
   transition: opacity 260ms ease;
   -webkit-transition: opacity 260ms ease;
@@ -147,23 +147,8 @@ main {
   background-color: rgba(255, 0, 80, 0.08);
 }
 
-.cover::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(100% + 1px);
-  height: 9px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0.38), rgba(255,255,255,0));
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 260ms ease;
-  -webkit-transition: opacity 260ms ease;
-}
-
 .cover[data-pos="center"] { z-index: 50; }
 .cover[data-pos="center"]::after { opacity: 0.42; }
-.cover[data-pos="center"]::before { opacity: 0.32; }
 .cover[data-pos="left"]::after,
 .cover[data-pos="right"]::after { opacity: 0.2; }
 
